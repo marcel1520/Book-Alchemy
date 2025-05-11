@@ -22,6 +22,11 @@ db.init_app(app)
 
 @app.route("/")
 def home():
+    """
+        Display the home page with a list of books.
+        Supports searching by book title and sorting by title, publication year, or author name.
+        Returns the rendered 'home.html' template with book data.
+        """
     search_query = request.args.get('search', '')
     sort_by = request.args.get('sort_by', 'title')
     valid_columns = {
@@ -44,6 +49,12 @@ def home():
 
 @app.route("/add_author", methods=['GET', 'POST'])
 def add_author():
+    """
+        Handle the creation of a new author.
+        GET: Renders a form to input author details.
+        POST: Processes form data and adds a new author to the database.
+        Returns the rendered 'add_author.html' template or redirects on success.
+        """
     if request.method == 'POST':
         name = request.form.get('name')
         birth_date = request.form.get('birth_date')
@@ -61,6 +72,12 @@ def add_author():
 
 @app.route("/add_book", methods=['GET', 'POST'])
 def add_book():
+    """
+        Handle the creation of a new book.
+        GET: Displays a form to input book details, including selecting an author.
+        POST: Processes the form and adds a new book record to the database.
+        Returns the rendered 'add_book.html' template or redirects on success.
+        """
     if request.method == 'POST':
         title = request.form.get('title')
         author_id = request.form.get('author_id')
@@ -80,6 +97,11 @@ def add_book():
 
 @app.route('/book/<int:book_id>/delete', methods=['POST'])
 def delete_book(book_id):
+    """
+        Delete a book entry by its ID.
+        POST: Deletes the book from the database if found and redirects to the home page.
+        Displays a flash message indicating success or failure.
+        """
     book = Book.query.get(book_id)
     if book:
         db.session.delete(book)
@@ -90,7 +112,10 @@ def delete_book(book_id):
     return redirect(url_for('home'))
 
 if __name__ == "__main__":
-
+    """
+        Important !!!!! Uncomment the db.create_all() block if initializing the database for the first time.
+        Starts the Flask development server in debug mode.
+        """
     """with app.app_context():
         db.create_all()"""
 
